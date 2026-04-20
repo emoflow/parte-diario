@@ -13,17 +13,23 @@ const container = document.getElementById('data-container');
 const totalInternosEl = document.getElementById('total-internos');
 
 function renderData() {
+    container.innerHTML = ""; // Limpiar antes de renderizar
     datosParte.forEach((item) => {
         const row = document.createElement('div');
         row.className = 'data-row';
         row.innerHTML = `
             <span class="section-name">${item.nombre}</span>
             <div class="values">
-                <input type="number" class="internos-input" value="0" min="0" onchange="updateTotal()">
+                <input type="number" class="internos-input" value="0" min="0">
                 <span class="capacidad-box">${item.capacidad}</span>
             </div>
         `;
         container.appendChild(row);
+    });
+
+    // Escuchar cambios en los inputs para actualizar el total
+    document.querySelectorAll('.internos-input').forEach(input => {
+        input.addEventListener('input', updateTotal);
     });
 }
 
@@ -36,25 +42,34 @@ function updateTotal() {
     totalInternosEl.innerText = total;
 }
 
-// Función para exportar a PDF
+// Nueva forma de asignar la función de exportar
 function exportarPDF() {
     const elemento = document.getElementById('reporte-pdf');
     const boton = document.getElementById('btn-exportar');
     
-    // Ocultar botón temporalmente para que no salga en el PDF
-    boton.style.display = 'none';
+    boton.style.display = 'none'; // Ocultar para el PDF
 
     const opciones = {
-        margin: 1,
+        margin: 0.5,
         filename: 'Parte_Diario_Internos.pdf',
         image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
+        html2canvas: { scale: 2, useCORS: true },
         jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
     };
 
     html2pdf().set(opciones).from(elemento).save().then(() => {
-        boton.style.display = 'block'; // Volver a mostrar el botón
+        boton.style.display = 'block';
     });
 }
+
+// Inicialización segura
+window.onload = () => {
+    renderData();
+    // Asignar el evento click aquí soluciona el ReferenceError
+    const btn = document.getElementById('btn-exportar');
+    if (btn) {
+        btn.addEventListener('click', exportarPDF);
+    }
+};
 
 window.onload = renderData;
