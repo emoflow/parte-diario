@@ -1,5 +1,4 @@
-// Datos basados fielmente en la fuente proporcionada [1]
-const sectores = [
+const datosParte = [
     { nombre: "PABELLON 1", capacidad: 4 },
     { nombre: "PABELLON 2", capacidad: 30 },
     { nombre: "PABELLON 3", capacidad: 10 },
@@ -12,71 +11,63 @@ const sectores = [
 
 const container = document.getElementById('data-container');
 const totalInternosEl = document.getElementById('total-internos');
-const timestampEl = document.getElementById('timestamp');
 
-// Renderiza las filas de datos
-function init() {
-    container.innerHTML = "";
-    sectores.forEach(s => {
-        const div = document.createElement('div');
-        div.className = 'data-row';
-        div.innerHTML = `
-            <span class="section-name">${s.nombre}</span>
+function renderData() {
+    container.innerHTML = ""; // Limpiar antes de renderizar
+    datosParte.forEach((item) => {
+        const row = document.createElement('div');
+        row.className = 'data-row';
+        row.innerHTML = `
+            <span class="section-name">${item.nombre}</span>
             <div class="values">
                 <input type="number" class="internos-input" value="0" min="0">
-                <span class="capacidad-box">${s.capacidad}</span>
+                <span class="capacidad-box">${item.capacidad}</span>
             </div>
         `;
-        container.appendChild(div);
+        container.appendChild(row);
     });
 
-    // Actualizar fecha y hora al cargar
-    actualizarFechaHora();
-
-    // Event listeners para los inputs
+    // Escuchar cambios en los inputs para actualizar el total
     document.querySelectorAll('.internos-input').forEach(input => {
-        input.addEventListener('input', calcularTotal);
+        input.addEventListener('input', updateTotal);
     });
-
-    // Event listener para el botón de PDF
-    document.getElementById('btn-exportar').addEventListener('click', exportarPDF);
 }
 
-function calcularTotal() {
+function updateTotal() {
+    const inputs = document.querySelectorAll('.internos-input');
     let total = 0;
-    document.querySelectorAll('.internos-input').forEach(input => {
+    inputs.forEach(input => {
         total += parseInt(input.value) || 0;
     });
     totalInternosEl.innerText = total;
 }
 
-function actualizarFechaHora() {
-    const ahora = new Date();
-    const opciones = { 
-        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', 
-        hour: '2-digit', minute: '2-digit', second: '2-digit' 
-    };
-    timestampEl.innerText = `Carga realizada el: ${ahora.toLocaleDateString('es-ES', opciones)}`;
-}
-
+// Nueva forma de asignar la función de exportar
 function exportarPDF() {
-    actualizarFechaHora(); // Asegurar que el PDF tenga la hora exacta del clic
     const elemento = document.getElementById('reporte-pdf');
     const boton = document.getElementById('btn-exportar');
     
-    boton.style.visibility = 'hidden';
+    boton.style.display = 'none'; // Ocultar para el PDF
 
     const opciones = {
         margin: 0.5,
-        filename: `Parte_Diario_${new Date().getTime()}.pdf`,
+        filename: 'Parte_Diario_Internos.pdf',
         image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 3, useCORS: true },
+        html2canvas: { scale: 2, useCORS: true },
         jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
     };
 
     html2pdf().set(opciones).from(elemento).save().then(() => {
-        boton.style.visibility = 'visible';
+        boton.style.display = 'block';
     });
 }
 
-window.onload = init;
+// Inicialización segura
+window.onload = () => {
+    renderData();
+    // Asignar el evento click aquí soluciona el ReferenceError
+    const btn = document.getElementById('btn-exportar');
+    if (btn) {
+        btn.addEventListener('click', exportarPDF);
+    }
+};
