@@ -1,4 +1,3 @@
-// Datos extraídos de la fuente proporcionada [1]
 const datosParte = [
     { nombre: "PABELLON 1", capacidad: 4 },
     { nombre: "PABELLON 2", capacidad: 30 },
@@ -14,7 +13,7 @@ const container = document.getElementById('data-container');
 const totalInternosEl = document.getElementById('total-internos');
 
 function renderData() {
-    datosParte.forEach((item, index) => {
+    datosParte.forEach((item) => {
         const row = document.createElement('div');
         row.className = 'data-row';
         row.innerHTML = `
@@ -37,5 +36,25 @@ function updateTotal() {
     totalInternosEl.innerText = total;
 }
 
-// Inicializar la carga
+// Función para exportar a PDF
+function exportarPDF() {
+    const elemento = document.getElementById('reporte-pdf');
+    const boton = document.getElementById('btn-exportar');
+    
+    // Ocultar botón temporalmente para que no salga en el PDF
+    boton.style.display = 'none';
+
+    const opciones = {
+        margin: 1,
+        filename: 'Parte_Diario_Internos.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opciones).from(elemento).save().then(() => {
+        boton.style.display = 'block'; // Volver a mostrar el botón
+    });
+}
+
 window.onload = renderData;
