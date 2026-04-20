@@ -1,0 +1,105 @@
+:root {
+    --bg-color: #f8fafc;
+    --card-bg: #ffffff;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --accent: #3b82f6;
+    --border: #e2e8f0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+    margin: 0;
+}
+
+.container {
+    width: 100%;
+    max-width: 400px;
+}
+
+header h1 {
+    text-align: center;
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+    margin-bottom: 30px;
+    font-weight: 600;
+}
+
+.header-labels {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 15px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+}
+
+.data-row {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    margin-bottom: 12px;
+    transition: transform 0.2s;
+}
+
+.data-row:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.section-name {
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.values {
+    display: flex;
+    gap: 20px;
+}
+
+.internos-input {
+    width: 40px;
+    border: none;
+    border-bottom: 2px solid var(--border);
+    text-align: center;
+    font-family: inherit;
+    font-weight: 600;
+    color: var(--accent);
+}
+
+.internos-input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.capacidad-box {
+    width: 40px;
+    text-align: center;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.total-card {
+    margin-top: 30px;
+    background: var(--text-main);
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.total-card .capacidad-val {
+    color: #94a3b8;
+}
