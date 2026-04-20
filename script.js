@@ -1,73 +1,74 @@
-const datosParte = [
-    { nombre: "PABELLON 1", capacidad: 4 },
-    { nombre: "PABELLON 2", capacidad: 30 },
-    { nombre: "PABELLON 3", capacidad: 10 },
-    { nombre: "PABELLON 4", capacidad: 4 },
-    { nombre: "CELDA 5", capacidad: 2 },
-    { nombre: "CELDA 6", capacidad: 4 },
-    { nombre: "MUJERES", capacidad: 8 },
-    { nombre: "MENORES", capacidad: 4 }
+// Datos de la fuente original [1]
+const sectores = [
+    { nombre: "PABELLON 1", cap: 4 },
+    { nombre: "PABELLON 2", cap: 30 },
+    { nombre: "PABELLON 3", cap: 10 },
+    { nombre: "PABELLON 4", cap: 4 },
+    { nombre: "CELDA 5", cap: 2 },
+    { nombre: "CELDA 6", cap: 4 },
+    { nombre: "MUJERES", cap: 8 },
+    { nombre: "MENORES", cap: 4 }
 ];
 
-const container = document.getElementById('data-container');
-const totalInternosEl = document.getElementById('total-internos');
+const mainContainer = document.getElementById('data-container');
+const totalEl = document.getElementById('total-internos');
+const fechaEl = document.getElementById('fecha-actual');
 
-function renderData() {
-    container.innerHTML = ""; // Limpiar antes de renderizar
-    datosParte.forEach((item) => {
+function cargarSectores() {
+    sectores.forEach(s => {
         const row = document.createElement('div');
         row.className = 'data-row';
         row.innerHTML = `
-            <span class="section-name">${item.nombre}</span>
+            <span class="section-name">${s.nombre}</span>
             <div class="values">
                 <input type="number" class="internos-input" value="0" min="0">
-                <span class="capacidad-box">${item.capacidad}</span>
+                <span class="capacidad-val">${s.cap}</span>
             </div>
         `;
-        container.appendChild(row);
+        mainContainer.appendChild(row);
     });
 
-    // Escuchar cambios en los inputs para actualizar el total
+    // Evento para actualizar total
     document.querySelectorAll('.internos-input').forEach(input => {
-        input.addEventListener('input', updateTotal);
+        input.addEventListener('input', () => {
+            let sum = 0;
+            document.querySelectorAll('.internos-input').forEach(i => sum += Number(i.value) || 0);
+            totalEl.innerText = sum;
+        });
     });
 }
 
-function updateTotal() {
-    const inputs = document.querySelectorAll('.internos-input');
-    let total = 0;
-    inputs.forEach(input => {
-        total += parseInt(input.value) || 0;
-    });
-    totalInternosEl.innerText = total;
-}
-
-// Nueva forma de asignar la función de exportar
-function exportarPDF() {
-    const elemento = document.getElementById('reporte-pdf');
-    const boton = document.getElementById('btn-exportar');
-    
-    boton.style.display = 'none'; // Ocultar para el PDF
-
-    const opciones = {
-        margin: 0.5,
-        filename: 'Parte_Diario_Internos.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-    };
-
-    html2pdf().set(opciones).from(elemento).save().then(() => {
-        boton.style.display = 'block';
+function mostrarFecha() {
+    const ahora = new Date();
+    fechaEl.innerText = "Generado el: " + ahora.toLocaleString('es-ES', {
+        dateStyle: 'long',
+        timeStyle: 'short'
     });
 }
 
-// Inicialización segura
-window.onload = () => {
-    renderData();
-    // Asignar el evento click aquí soluciona el ReferenceError
+function descargarPDF() {
+    mostrarFecha(); // Actualiza la hora justo antes de exportar
+    const element = document.getElementById('reporte-pdf');
     const btn = document.getElementById('btn-exportar');
-    if (btn) {
-        btn.addEventListener('click', exportarPDF);
-    }
+    
+    btn.style.display = 'none';
+
+    html2pdf()
+        .set({
+            margin: 0.5,
+            filename: 'parte-diario.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 3 },
+            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        })
+        .from(element)
+        .save()
+        .then(() => btn.style.display = 'block');
+}
+
+// Inicialización
+window.onload = () => {
+    cargarSectores();
+    mostrarFecha();
+    document.getElementById('btn-exportar').onclick = descargarPDF;
 };
