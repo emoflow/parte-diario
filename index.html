@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Parte Diario - Control de Internos</title>
+    <title>Parte Diario - Control de internos</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    <!-- Librería externa para PDF -->
+    <!-- Librería para exportar a PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
@@ -20,7 +20,7 @@
         </header>
 
         <main id="data-container">
-            <!-- Sectores cargados dinámicamente: Pabellones, Celdas, etc. -->
+            <!-- Los datos se cargan dinámicamente aquí -->
         </main>
 
         <footer>
@@ -31,12 +31,8 @@
                     <span id="total-capacidad" class="capacidad-val">66</span>
                 </div>
             </div>
-            
-            <div id="timestamp" class="timestamp">
-                <!-- Fecha y hora se insertan aquí -->
-            </div>
-
-            <button id="btn-exportar" class="export-btn">Exportar a PDF</button>
+            <!-- Botón de Exportación -->
+            <button id="btn-exportar" class="export-btn" onclick="exportarPDF()">Exportar a PDF</button>
         </footer>
     </div>
     <script src="script.js"></script>
